@@ -1,4 +1,5 @@
 import { Layout } from '@/components/Layout';
+import { PageTransition } from '@/components/PageTransition';
 import { HeroSection } from '@/components/HeroSection';
 import { FeaturedAliens } from '@/components/FeaturedAliens';
 import { SeriesIntro } from '@/components/SeriesIntro';
@@ -6,9 +7,11 @@ import { SeriesIntro } from '@/components/SeriesIntro';
 const Index = () => {
   return (
     <Layout>
-      <HeroSection />
-      <FeaturedAliens />
-      <SeriesIntro />
+      <PageTransition>
+        <HeroSection />
+        <FeaturedAliens />
+        <SeriesIntro />
+      </PageTransition>
     </Layout>
   );
 };
