@@ -12,7 +12,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/ben-10-archives">
         <AnimatedRoutes />
       </BrowserRouter>
     </TooltipProvider>
