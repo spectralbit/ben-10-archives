@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Alien } from '@/data/aliens';
 
 interface AlienCardProps {
@@ -7,8 +8,9 @@ interface AlienCardProps {
 
 export const AlienCard = ({ alien, index }: AlienCardProps) => {
   return (
-    <div 
-      className="alien-card rounded-xl overflow-hidden group"
+    <Link 
+      to={`/aliens/${alien.id}`}
+      className="alien-card rounded-xl overflow-hidden group block"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Image Container */}
@@ -65,6 +67,6 @@ export const AlienCard = ({ alien, index }: AlienCardProps) => {
           ))}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
