@@ -127,6 +127,19 @@
     transform: translateX(8px);
   }
 
+  .villain-card {
+    background: var(--gradient-card);
+    border: 1px solid hsl(0 84% 60% / 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .villain-card:hover {
+    border-color: hsl(0 84% 60% / 0.6);
+    box-shadow: 0 0 30px hsl(0 84% 60% / 0.2),
+                inset 0 0 30px hsl(0 84% 60% / 0.05);
+    transform: translateY(-4px);
+  }
+
   /* Navbar Styles */
   .nav-link {
     position: relative;

@@ -5,8 +5,11 @@ import { Menu, X } from 'lucide-react';
 const navLinks = [
   { path: '/', label: 'Home' },
   { path: '/aliens', label: 'Aliens' },
+  { path: '/villains', label: 'Villains' },
   { path: '/omnitrix', label: 'Omnitrix' },
   { path: '/episodes', label: 'Episodes' },
+  { path: '/quiz', label: 'Quiz' },
+  { path: '/timeline', label: 'Timeline' },
   { path: '/about', label: 'About' },
 ];
 
