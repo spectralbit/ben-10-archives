@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Search, Filter, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -30,8 +30,21 @@ export const SearchFilter = ({
 }: SearchFilterProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const hasActiveFilters = filters.some(f => f.value !== 'all');
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const clearFilters = () => {
     filters.forEach(f => f.onChange('all'));
@@ -52,7 +65,7 @@ export const SearchFilter = ({
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-card border border-border/50 rounded-lg font-exo text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-card border border-border/50 rounded-lg font-exo text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
           />
           {searchValue && (
             <button
@@ -67,16 +80,18 @@ export const SearchFilter = ({
         {filters.length > 0 && (
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-3 rounded-lg font-exo text-sm border transition-all ${
+            className={`flex items-center gap-2 px-5 py-3 rounded-lg font-exo text-sm font-medium border transition-all ${
               showFilters || hasActiveFilters
-                ? 'bg-primary/10 border-primary/50 text-primary'
-                : 'bg-card border-border/50 text-muted-foreground hover:border-primary/30'
+                ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25'
+                : 'bg-card border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground'
             }`}
           >
             <Filter size={18} />
             <span>Filters</span>
             {hasActiveFilters && (
-              <span className="w-2 h-2 rounded-full bg-primary" />
+              <span className="w-5 h-5 rounded-full bg-primary-foreground/20 flex items-center justify-center text-xs">
+                {filters.filter(f => f.value !== 'all').length}
+              </span>
             )}
           </button>
         )}
@@ -92,52 +107,57 @@ export const SearchFilter = ({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="flex flex-wrap gap-3 p-4 bg-card/50 rounded-lg border border-border/30">
+            <div 
+              ref={dropdownRef}
+              className="flex flex-wrap gap-3 p-4 bg-card rounded-xl border border-border/50 shadow-lg"
+            >
               {filters.map((filter) => (
                 <div key={filter.key} className="relative">
                   <button
                     onClick={() => setOpenDropdown(openDropdown === filter.key ? null : filter.key)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-exo text-sm border transition-all ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-exo text-sm border transition-all ${
                       filter.value !== 'all'
-                        ? 'bg-primary/10 border-primary/50 text-primary'
-                        : 'bg-muted/50 border-border/50 text-foreground hover:border-primary/30'
+                        ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20'
+                        : 'bg-muted/50 border-border text-foreground hover:border-primary/50 hover:bg-muted'
                     }`}
                   >
-                    <span>{filter.label}:</span>
-                    <span className="font-medium">
+                    <span className="text-muted-foreground">{filter.label}:</span>
+                    <span className="font-semibold">
                       {filter.options.find(o => o.value === filter.value)?.label || 'All'}
                     </span>
                     <ChevronDown 
                       size={16} 
-                      className={`transition-transform ${openDropdown === filter.key ? 'rotate-180' : ''}`}
+                      className={`transition-transform duration-200 ${openDropdown === filter.key ? 'rotate-180' : ''}`}
                     />
                   </button>
 
                   <AnimatePresence>
                     {openDropdown === filter.key && (
                       <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute top-full left-0 mt-2 min-w-[180px] bg-popover border border-border rounded-lg shadow-xl z-50 overflow-hidden"
+                        className="absolute top-full left-0 mt-2 min-w-[200px] bg-popover border border-border rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-sm"
                       >
-                        {filter.options.map((option) => (
-                          <button
-                            key={option.value}
-                            onClick={() => {
-                              filter.onChange(option.value);
-                              setOpenDropdown(null);
-                            }}
-                            className={`w-full px-4 py-2 text-left font-exo text-sm transition-colors ${
-                              filter.value === option.value
-                                ? 'bg-primary/20 text-primary'
-                                : 'text-foreground hover:bg-muted'
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
+                        <div className="p-1">
+                          {filter.options.map((option) => (
+                            <button
+                              key={option.value}
+                              onClick={() => {
+                                filter.onChange(option.value);
+                                setOpenDropdown(null);
+                              }}
+                              className={`w-full px-4 py-2.5 text-left font-exo text-sm rounded-lg transition-all ${
+                                filter.value === option.value
+                                  ? 'bg-primary text-primary-foreground font-medium'
+                                  : 'text-foreground hover:bg-muted'
+                              }`}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -147,7 +167,7 @@ export const SearchFilter = ({
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-1 px-3 py-2 text-muted-foreground hover:text-destructive font-exo text-sm transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2.5 text-destructive hover:bg-destructive/10 font-exo text-sm font-medium rounded-lg transition-all"
                 >
                   <X size={16} />
                   <span>Clear all</span>
@@ -161,7 +181,7 @@ export const SearchFilter = ({
       {/* Results Count */}
       {resultCount !== undefined && (
         <p className="text-sm text-muted-foreground font-exo">
-          Showing <span className="text-primary font-medium">{resultCount}</span> result{resultCount !== 1 ? 's' : ''}
+          Showing <span className="text-primary font-semibold">{resultCount}</span> result{resultCount !== 1 ? 's' : ''}
         </p>
       )}
     </div>
