@@ -101,11 +101,10 @@ export const SearchFilter = ({
       <AnimatePresence>
         {showFilters && filters.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden"
           >
             <div 
               ref={dropdownRef}
@@ -138,9 +137,10 @@ export const SearchFilter = ({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute top-full left-0 mt-2 min-w-[200px] bg-popover border border-border rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-sm"
+                        className="absolute top-full left-0 mt-2 min-w-[200px] bg-popover border border-border rounded-xl shadow-2xl z-[100] backdrop-blur-sm"
+                        style={{ position: 'absolute' }}
                       >
-                        <div className="p-1">
+                        <div className="p-1 max-h-[300px] overflow-y-auto">
                           {filter.options.map((option) => (
                             <button
                               key={option.value}
@@ -151,7 +151,7 @@ export const SearchFilter = ({
                               className={`w-full px-4 py-2.5 text-left font-exo text-sm rounded-lg transition-all ${
                                 filter.value === option.value
                                   ? 'bg-primary text-primary-foreground font-medium'
-                                  : 'text-foreground hover:bg-muted'
+                                  : 'text-popover-foreground hover:bg-muted'
                               }`}
                             >
                               {option.label}
