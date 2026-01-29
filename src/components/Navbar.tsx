@@ -6,6 +6,7 @@ const navLinks = [
   { path: '/', label: 'Home' },
   { path: '/aliens', label: 'Aliens' },
   { path: '/villains', label: 'Villains' },
+  { path: '/characters', label: 'Characters' },
   { path: '/omnitrix', label: 'Omnitrix' },
   { path: '/episodes', label: 'Episodes' },
   { path: '/quiz', label: 'Quiz' },

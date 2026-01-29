@@ -9,6 +9,8 @@ import Omnitrix from '@/pages/Omnitrix';
 import Episodes from '@/pages/Episodes';
 import Quiz from '@/pages/Quiz';
 import TimelinePage from '@/pages/TimelinePage';
+import Characters from '@/pages/Characters';
+import CharacterDetail from '@/pages/CharacterDetail';
 import About from '@/pages/About';
 import NotFound from '@/pages/NotFound';
 
@@ -27,6 +29,8 @@ export const AnimatedRoutes = () => {
         <Route path="/episodes" element={<Episodes />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/timeline" element={<TimelinePage />} />
+        <Route path="/characters" element={<Characters />} />
+        <Route path="/characters/:id" element={<CharacterDetail />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
