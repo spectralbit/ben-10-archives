@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Quote } from 'lucide-react';
 import type { Character } from '@/data/characters';
+import { FavoriteButton } from './FavoriteButton';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface CharacterCardProps {
   character: Character;
@@ -9,6 +11,15 @@ interface CharacterCardProps {
 }
 
 export const CharacterCard = ({ character, index }: CharacterCardProps) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite('character', character.id);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite('character', character.id);
+  };
+
   const roleColors: Record<string, string> = {
     'Hero / Omnitrix Wielder': 'bg-primary/20 text-primary border-primary/30',
     'Support / Magic User': 'bg-purple-500/20 text-purple-400 border-purple-500/30',
@@ -22,9 +33,18 @@ export const CharacterCard = ({ character, index }: CharacterCardProps) => {
       transition={{ delay: index * 0.15, duration: 0.5 }}
     >
       <Link to={`/characters/${character.id}`}>
-        <article className="alien-card rounded-xl p-6 h-full flex flex-col gap-4 group cursor-pointer">
+        <article className="alien-card rounded-xl p-6 h-full flex flex-col gap-4 group cursor-pointer relative">
+          {/* Favorite Button */}
+          <div className="absolute top-4 right-4">
+            <FavoriteButton
+              isFavorite={favorited}
+              onClick={handleFavoriteClick}
+              variant="default"
+            />
+          </div>
+
           {/* Icon & Header */}
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 pr-12">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center border border-border/50 group-hover:border-primary/50 transition-colors">
               <User className="w-8 h-8 text-primary" />
             </div>

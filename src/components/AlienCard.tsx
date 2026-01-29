@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Alien } from '@/data/aliens';
+import { FavoriteButton } from './FavoriteButton';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface AlienCardProps {
   alien: Alien;
@@ -7,6 +9,15 @@ interface AlienCardProps {
 }
 
 export const AlienCard = ({ alien, index }: AlienCardProps) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite('alien', alien.id);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite('alien', alien.id);
+  };
+
   return (
     <Link 
       to={`/aliens/${alien.id}`}
@@ -26,9 +37,18 @@ export const AlienCard = ({ alien, index }: AlienCardProps) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         
+        {/* Favorite Button */}
+        <div className="absolute top-3 right-3">
+          <FavoriteButton
+            isFavorite={favorited}
+            onClick={handleFavoriteClick}
+            variant="default"
+          />
+        </div>
+        
         {/* Glow overlay on hover */}
         <div 
-          className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-300"
+          className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none"
           style={{ 
             background: `radial-gradient(circle at center, ${alien.color}, transparent 70%)` 
           }}
