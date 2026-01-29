@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Villain } from '@/data/villains';
 import { Skull } from 'lucide-react';
+import { FavoriteButton } from './FavoriteButton';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface VillainCardProps {
   villain: Villain;
@@ -15,6 +17,15 @@ const threatColors = {
 };
 
 export const VillainCard = ({ villain, index }: VillainCardProps) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite('villain', villain.id);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite('villain', villain.id);
+  };
+
   return (
     <Link
       to={`/villains/${villain.id}`}
@@ -34,14 +45,21 @@ export const VillainCard = ({ villain, index }: VillainCardProps) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         
-        {/* Threat Level Badge */}
-        <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-exo font-medium border ${threatColors[villain.threatLevel]}`}>
-          {villain.threatLevel} Threat
+        {/* Top row: Threat Level & Favorite */}
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+          <span className={`px-3 py-1 rounded-full text-xs font-exo font-medium border ${threatColors[villain.threatLevel]}`}>
+            {villain.threatLevel} Threat
+          </span>
+          <FavoriteButton
+            isFavorite={favorited}
+            onClick={handleFavoriteClick}
+            variant="destructive"
+          />
         </div>
 
         {/* Evil Glow overlay on hover */}
         <div 
-          className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-300"
+          className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none"
           style={{ 
             background: `radial-gradient(circle at center, ${villain.color}, transparent 70%)` 
           }}

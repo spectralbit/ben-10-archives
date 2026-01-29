@@ -11,6 +11,7 @@ const navLinks = [
   { path: '/episodes', label: 'Episodes' },
   { path: '/quiz', label: 'Quiz' },
   { path: '/timeline', label: 'Timeline' },
+  { path: '/favorites', label: 'Favorites' },
   { path: '/about', label: 'About' },
 ];
 
